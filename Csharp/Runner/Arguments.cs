@@ -4,13 +4,11 @@ namespace AOC.Runner;
 
 public class Arguments
 {
-    public enum ProblemPart{
-        all,first,second
-    }
-    
     public int Day { get; set; }
     public int Year { get; set; }
-    public ProblemPart Part { get; set; }
+    public Puzzle.Part Part { get; set; }
+
+    public string InputPath { get; set; }
 
     public Arguments(string[] args)
     {
@@ -20,15 +18,17 @@ public class Arguments
         {
             Part = part.First() switch
             {
-                "1" => ProblemPart.first,
-                "2" => ProblemPart.second,
-                _ => ProblemPart.all
+                "1" => Puzzle.Part.first,
+                "2" => Puzzle.Part.second,
+                _ => Puzzle.Part.both
             };
         }
         else
         {
-            Part = ProblemPart.all;
+            Part = Puzzle.Part.both;
         }
+
+
 
         var argsWithoutOptions = args.Where(x => !x.StartsWith("-")).ToList();
 
@@ -36,16 +36,39 @@ public class Arguments
 
         Day = today.Day;
         Year = today.Year;
+
         if (argsWithoutOptions.Count > 0)
         {
-            Day = int.Parse(argsWithoutOptions[0]); 
+            Day = int.Parse(argsWithoutOptions[0]);
 
         }
 
         if (argsWithoutOptions.Count > 1)
         {
-            Year = int.Parse(argsWithoutOptions[1]); 
+            Year = int.Parse(argsWithoutOptions[1]);
 
+        }
+
+        var input = args.Where(x => x.StartsWith("-i")).Select(x => x[3..]).ToArray();
+
+        if (input.Any())
+        {
+            InputPath = input.First();
+        }
+        else
+        {
+            var folder = $".\\Year{Year}\\Day{Day.ToString().PadLeft(2, '0')}\\";
+
+            if (args.Any(x => x == "-ti"))
+            {
+                InputPath = folder + "ti.txt";
+
+            }
+            else
+            {
+                InputPath = folder + "i.txt";
+
+            }
         }
     }
 }

@@ -12,7 +12,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Year2022\Day01" />
+      <None Update="Year2022\Day01\i.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Year2022\Day01\ti.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

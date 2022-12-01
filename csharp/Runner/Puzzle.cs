@@ -8,62 +8,65 @@ using System.Threading.Tasks;
 
 namespace AOC.Runner
 {
-    internal class Puzzle
+    public class Puzzle
     {
         public enum Part
         {
-            first,second, both
+            first, second, both
         }
 
         public int Day { private set; get; }
         public int Year { private set; get; }
-        public Part SelectedPart;
+
+        private string InputPath { set; get; }
 
 
-        public Puzzle()
+        public Puzzle(Arguments args)
         {
-            Day = DateTime.Today.Day;
-            Year = DateTime.Today.Year;
-            SelectedPart = Part.both;
+            Day = args.Day;
+            Year = args.Year;
+            InputPath = args.InputPath;
         }
 
-        public Puzzle(int day,int year,Part part)
+        public (PuzzleResult, PuzzleResult) SolveBoth()
         {
-            Day = day;
-            Year = year;
-            SelectedPart = part;
-        }
-
-        public Dictionary<int,PuzzleResult> Solve()
-        {
-            return new Dictionary<int,PuzzleResult>();
-
+            return (SolvePart(Part.first), SolvePart(Part.second));
 
         }
 
-        private PuzzleResult SolvePart(Part part)
+        public PuzzleResult SolvePart(Part part)
         {
-            var method = getMethod(part);
-           
-           var stopwatch = new Stopwatch();
-           stopwatch.Start();
-           var methodReturn = method.Invoke(null, null);
-           stopwatch.Stop();
-           
-           if (methodReturn is not string)
-           {
-               throw new Exception("Solution method didn't return string");
-           }
+            var methodNumber = part switch
+            {
+                Part.first => 1,
+                Part.second => 2,
+            };
 
-           return new PuzzleResult(stopwatch.Elapsed, (string)methodReturn, part);
+            var method = getMethod(methodNumber);
+
+
+            var input = File.ReadAllLines(InputPath);
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            var methodReturn = method.Invoke(null, new[] { input });
+
+            stopwatch.Stop();
+
+            if (methodReturn is not string)
+            {
+                throw new Exception("Solution method didn't return string");
+            }
+
+            return new PuzzleResult(stopwatch.Elapsed, (string)methodReturn, part);
 
         }
 
-        private MethodInfo getMethod(Part part)
+        private MethodInfo getMethod(int partNumber)
         {
             string paddedDay = Day.ToString().PadLeft(2, '0');
 
-            string path = $"AOC.Y{Year}.D{paddedDay}.Solution";
+            string path = $"Csharp.Year{Year}.Day{paddedDay}.Solution";
 
             Type puzzleSolutionClass = Type.GetType(path);
 
@@ -73,13 +76,9 @@ namespace AOC.Runner
             }
 
 
-            string methodName = part switch
-            {
-                Part.first => "SolverPart1",
-                Part.second => "SolverPart1"
-            };
+            string methodName = "Part" + partNumber;
 
-            MethodInfo method = puzzleSolutionClass.GetMethod(methodName, BindingFlags.Static);
+            MethodInfo method = puzzleSolutionClass.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public);
 
             if (method == null)
             {

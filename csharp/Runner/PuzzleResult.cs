@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOC.Runner
 {
-    internal class PuzzleResult
+    public class PuzzleResult
     {
         public TimeSpan Took;
         public string Result;
@@ -17,6 +17,7 @@ namespace AOC.Runner
             Took = took;
             Result = result;
             RunnedPart = runnedPart;
+
         }
     }
 }

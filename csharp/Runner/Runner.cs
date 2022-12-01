@@ -1,58 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace AOC.Runner;
 
-namespace AOC.Runner
+public class Runner
 {
-    internal class Runner
+    private Arguments args;
+
+    public Runner(Arguments args)
     {
-        private int day, year;
-        private Puzzle.Part part;
+        this.args = args;
+    }
 
-        /// <summary>
-        /// no params = run both parts of current date
-        /// </summary>
-        public Runner()
-        {
-            day = DateTime.Today.Day;
-            year = DateTime.Today.Year;
-            part = Puzzle.Part.both;
-        }
+    public void RunBoth()
+    {
+        var Puzzle = new Puzzle(args);
+        var (p1,p2) =  Puzzle.SolveBoth();
 
-        public Runner(int day)
-        {
-            this.day = day;
-            year = DateTime.Today.Year;
-            part = Puzzle.Part.both;
-        }
-        public Runner(int day, int year)
-        {
-            this.day = day;
-            this.year = year;
-            part = Puzzle.Part.both;
-        }
-        public Runner(int day, int year, int part)
-        {
-            this.day = day;
-            this.year = year;
-
-            switch (part)
-            {
-                case 0:
-                    this.part = Puzzle.Part.both;
-                    break;
-                case 1:
-                    this.part = Puzzle.Part.first;
-                    break;
-                case 2:
-                    this.part = Puzzle.Part.second;
-                    break;
-            }
-        }
-
+        printResult(p1);
+        printResult(p2);
 
     }
+
+    private void printResult(PuzzleResult puzzleResult)
+    {
+        var headerString =
+            $"--------------------{formattedPart(puzzleResult.RunnedPart)} in {puzzleResult.Took.Milliseconds}ms--------------------";
+        Console.WriteLine(headerString);
+        Console.WriteLine(puzzleResult.Result);
+        Console.WriteLine();
+    }
+
+    private string formattedPart(Puzzle.Part part)
+    {
+        return part switch
+        {
+            Puzzle.Part.first => "Part ONE",
+            Puzzle.Part.second => "Part TWO",
+            Puzzle.Part.both => "BOTH"
+        };
+    }
+
+
 }
