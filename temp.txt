@@ -1,72 +1,29 @@
 #!/bin/elixir
-
 defmodule Test do
+        def calculate_sum(values) do
+                values
+                |> String.split("\n")
+                |> Enum.map(&smart_parse(&1))
+                |> Enum.sum()
+        end
 
-def calculate_sum(values) do
-
-        values
-
-        |> String.split("\n")
-
-        |> Enum.map(&smart_parse(&1))
-
-        |> Enum.sum()
-
-end
-
-
-
-def smart_parse(str) when str == "", do: 0
-
-
-
-def smart_parse(str) do
-
-        {num,_} = Integer.parse(str)
-
-        num
+        def smart_parse(str) when str == "", do: 0
+        def smart_parse(str) do
+                {num,_} = Integer.parse(str)
+                num
+        end
 
 end
-
-
-
-end
-
-
-
-
 
 IO.puts("hello")
-
-
-
-
-
 {:ok,content} = File.read("input.txt")
 
-
-
 ordered  = content
-
 |> String.split("\n\n")
-
 |> Enum.map(&Test.calculate_sum(&1))
-
 |> Enum.sort()
-
 |> Enum.reverse()
 
 [first|_] = ordered
 
-
-
 IO.puts("part 1: " <> Integer.to_string(first))
-
-
-
-
-
-
-
-
-
