@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "Today": {
+      "commandName": "Project"
+    },
+    "Today Test Input": {
+      "commandName": "Project",
+      "commandLineArgs": "-ti"
+    }
+  }
+}
