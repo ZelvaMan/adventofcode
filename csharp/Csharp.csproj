@@ -8,40 +8,40 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommandLineParser" Version="2.9.1" />
+        <PackageReference Include="CommandLineParser" Version="2.9.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Year2022\Day01\i.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Year2022\Day01\ti.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Year2022\Day02\i.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Year2022\Day02\ti.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Year2022\Day2\ti.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Year2022\Day03\i.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Year2022\Day03\ti.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Remove="[TEMPLATE]\**" />
+        <None Update="Year2022\Day01\i.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Year2022\Day01\ti.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Year2022\Day02\i.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Year2022\Day02\ti.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Year2022\Day2\ti.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Year2022\Day03\i.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Year2022\Day03\ti.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Remove="[TEMPLATE]\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="[TEMPLATE]\**" />
+        <Compile Remove="[TEMPLATE]\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="[TEMPLATE]\**" />
+        <EmbeddedResource Remove="[TEMPLATE]\**"/>
     </ItemGroup>
 
 </Project>

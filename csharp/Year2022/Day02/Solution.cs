@@ -1,13 +1,11 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace Csharp.Year2022.Day02;
+﻿namespace Csharp.Year2022.Day02;
 
 public class Solution
 {
 	public static string Part1(string[] input)
 	{
 		var s = ParseInput(input);
-		var results = s.Select((pair => dogame(pair) + pair.us));
+		var results = s.Select(pair => dogame(pair) + pair.us);
 		var sum = results.Sum();
 		return sum.ToString();
 	}
@@ -17,10 +15,9 @@ public class Solution
 		var s = ParseInput(input);
 		var results = s
 			.Select(x => (x.they, matchGame(x)))
-			.Select((pair => dogame(pair) + pair.Item2));
+			.Select(pair => dogame(pair) + pair.Item2);
 		var sum = results.Sum();
 		return sum.ToString();
-
 	}
 
 	//ROCK = 1 = AX
@@ -57,22 +54,17 @@ public class Solution
 		//y => same
 		//z => win
 
-		if (pair.result == 2)
-		{
-			return pair.they;
-		}
+		if (pair.result == 2) return pair.they;
 
 		if (pair.result == 1)
-		{
 			return pair.they switch
 			{
 				1 => 3,
 				2 => 1,
 				3 => 2
 			};
-		}
+
 		if (pair.result == 3)
-		{
 			return pair.they switch
 			{
 				1 => 2,
@@ -80,10 +72,7 @@ public class Solution
 				3 => 1
 			};
 
-		}
-
 		throw new Exception("oh nou");
-
 	}
 
 	private static int CharToNum(string s)
@@ -95,7 +84,7 @@ public class Solution
 			"B" => 2,
 			"Y" => 2,
 			"C" => 3,
-			"Z" => 3,
+			"Z" => 3
 		};
 	}
 }
