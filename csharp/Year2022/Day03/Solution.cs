@@ -26,7 +26,7 @@ public class Solution
                 x.Substring(x.Length / 2, x.Length / 2)
             ))
             .Select(x =>
-                x.Item1.ToHashSet().Intersect(x.Item2.ToHashSet()).First()
+                x.Item1.Intersect(x.Item2).First()
             ).ToList();
 
         //only return one, because there is always only one
