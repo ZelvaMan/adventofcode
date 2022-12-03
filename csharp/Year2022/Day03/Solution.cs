@@ -23,7 +23,7 @@ public class Solution
             .Select(x =>
             (
                 x[..(x.Length / 2)],
-                x.Substring(x.Length / 2, x.Length / 2)
+                x[(x.Length / 2)..]
             ))
             .Select(x =>
                 x.Item1.Intersect(x.Item2).First()
@@ -43,6 +43,7 @@ public class Solution
                 var result = new HashSet<char>(s[0]);
                 result.IntersectWith(s[1]);
                 result.IntersectWith(s[2]);
+                //there is always only one character
                 return result.First();
             }).ToList();
 
