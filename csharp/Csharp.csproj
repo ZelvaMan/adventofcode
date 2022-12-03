@@ -27,6 +27,21 @@
       <None Update="Year2022\Day2\ti.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="Year2022\Day03\i.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Year2022\Day03\ti.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Remove="[TEMPLATE]\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="[TEMPLATE]\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="[TEMPLATE]\**" />
     </ItemGroup>
 
 </Project>
