@@ -14,7 +14,10 @@ public class Solution
 
 	public static string Part2(string[] input)
 	{
-		return "not implemented";
+		var parsed = input.Select(Range.ParseTwo).ToList();
+
+		int overlap = parsed.Where(Range.Overlap).Count();
+		return overlap.ToString();
 	}
 }
 
@@ -36,9 +39,9 @@ public class Range
 		return (new Range(split[0]), new Range(split[1]));
 	}
 
-	public static bool FullyOverlap((Range r1, Range r2) ranges)
+	public static bool FullyOverlap((Range r1, Range r2) rangesPair)
 	{
-		var (r1, r2) = ranges;
+		var (r1, r2) = rangesPair;
 
 		if (r1.IsSubset(r2))
 		{
@@ -51,6 +54,23 @@ public class Range
 		}
 
 		return false;
+	}
+
+	public static bool Overlap((Range r1, Range r2) rangesPair)
+	{
+		var (r1, r2) = rangesPair;
+
+		if (r1.end < r2.start)
+		{
+			return false;
+		}
+
+		if (r1.start > r2.end)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	public bool IsSubset(Range r)
