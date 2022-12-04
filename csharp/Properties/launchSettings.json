@@ -10,6 +10,14 @@
     "Today Test Input": {
       "commandName": "Project",
       "commandLineArgs": "-ti"
+    },
+    "Selected day Test (override in launchSettings.json)": {
+      "commandName": "Project",
+      "commandLineArgs": "01 2022 "
+    },
+    "Selected day (override in launchSettings.json)": {
+      "commandName": "Project",
+      "commandLineArgs": "01 2022 -ti"
     }
   }
 }

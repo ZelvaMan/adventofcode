@@ -16,7 +16,7 @@ public class Solution
 		return sum.ToString();
 	}
 
-	private static List<char> CommonItems(string[] input)
+	private static IEnumerable<char> CommonItems(string[] input)
 	{
 		//get all common chars between half's of the line 
 		var commonItems = input
@@ -27,13 +27,13 @@ public class Solution
 			))
 			.Select(x =>
 				x.Item1.Intersect(x.Item2).First()
-			).ToList();
+			);
 
 		//only return one, because there is always only one
 		return commonItems;
 	}
 
-	private static List<char> CommonItemInGroup(string[] input)
+	private static IEnumerable<char> CommonItemInGroup(string[] input)
 	{
 		var commonItems = input
 			.Chunk(3)
@@ -45,7 +45,7 @@ public class Solution
 				result.IntersectWith(s[2]);
 				//there is always only one character
 				return result.First();
-			}).ToList();
+			});
 
 		return commonItems;
 	}

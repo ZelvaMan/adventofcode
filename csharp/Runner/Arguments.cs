@@ -23,7 +23,6 @@ public class Arguments
 
 		Day = today.Day;
 		Year = today.Year;
-
 		if (argsWithoutOptions.Count > 0) Day = int.Parse(argsWithoutOptions[0]);
 
 		if (argsWithoutOptions.Count > 1) Year = int.Parse(argsWithoutOptions[1]);
@@ -36,7 +35,7 @@ public class Arguments
 		}
 		else
 		{
-			var folder = $".\\Year{Year}\\Day{Day.ToString().PadLeft(2, '0')}\\";
+			var folder = $"..\\..\\..\\..\\inputs\\{Year}\\{Day.ToString().PadLeft(2, '0')}\\";
 
 			if (args.Any(x => x == "-ti"))
 				InputPath = folder + "ti.txt";

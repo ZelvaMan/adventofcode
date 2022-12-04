@@ -16,7 +16,6 @@ public class Runner
 
 		printResult(p1);
 		printResult(p2);
-		printResult(p2);
 	}
 
 	private void printResult(PuzzleResult puzzleResult)
