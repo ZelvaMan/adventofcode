@@ -36,14 +36,14 @@ public class Solution
 
 public class CargeCrain
 {
-	public int stacksCount { get; private set; }
+	public int StacksCount { get; private set; }
 	public List<List<char>> Stacks { get; set; }
 
 	public CargeCrain(IEnumerable<string> inputs)
 	{
 		UpdateNumberOfStacks(inputs.First());
 		Stacks = new List<List<char>>();
-		Stacks.AddRange(Enumerable.Range(0, stacksCount).Select(x => new List<char>()));
+		Stacks.AddRange(Enumerable.Range(0, StacksCount).Select(x => new List<char>()));
 
 		//go from bottom up
 		foreach (var line in inputs.Reverse().Skip(1))
@@ -54,12 +54,12 @@ public class CargeCrain
 
 	private void UpdateNumberOfStacks(string firstLine)
 	{
-		stacksCount = (firstLine.Length + 1) / 4;
+		StacksCount = (firstLine.Length + 1) / 4;
 	}
 
 	private void AddToStack(string line)
 	{
-		for (int i = 0; i < stacksCount; i++)
+		for (var i = 0; i < StacksCount; i++)
 		{
 			var stackCharacter = line[i * 4 + 1];
 			if (stackCharacter != ' ')
@@ -96,6 +96,7 @@ public class CargeCrain
 	{
 		var fromStartIndex = Stacks[from].Count - amount;
 
+		//if they arent enough crates in stack, prevent negative index
 		if (fromStartIndex < 0)
 		{
 			fromStartIndex = 0;
@@ -103,8 +104,8 @@ public class CargeCrain
 
 		var movedStack = Stacks[from].GetRange(fromStartIndex, amount);
 
-		Console.WriteLine(
-			$"({Strings.Join(movedStack.Select(x => x.ToString()).ToArray(), " ")}) FROM {from + 1} TO {to + 1}");
+		// Console.WriteLine(
+		// 	$"({Strings.Join(movedStack.Select(x => x.ToString()).ToArray(), " ")}) FROM {from + 1} TO {to + 1}");
 
 		Stacks[from].RemoveRange(fromStartIndex, amount);
 		Stacks[to].AddRange(movedStack);
@@ -117,7 +118,7 @@ public class CargeCrain
 	{
 		var moved = Stacks[from].Last();
 		
-		Console.WriteLine($"MOVED {moved} FROM {from + 1} TO {to + 1}");
+		// Console.WriteLine($"MOVED {moved} FROM {from + 1} TO {to + 1}");
 		
 		Stacks[from].RemoveAt(Stacks[from].Count - 1);
 		Stacks[to].Add(moved);
@@ -125,13 +126,7 @@ public class CargeCrain
 
 	public string GetTopCrates()
 	{
-		string str = "";
-		foreach (var stack in Stacks)
-		{
-			str += stack.Last();
-		}
-
-		return str;
+		return Stacks.Aggregate("", (current, stack) => current + stack.Last());
 	}
 
 	public void PrintStacks()
