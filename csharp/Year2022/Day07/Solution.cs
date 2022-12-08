@@ -16,7 +16,20 @@ public class Solution
 
     public static string Part2(string[] input)
     {
-        return "NOT IMPLEMENTED";
+        const long totalSize = 70000000,updateSize = 30000000;
+        
+        var fs = new FileSystem(input);
+        Console.WriteLine("TEST");
+
+        var dirs = fs.NestedDirectorySize();
+
+        var freeSpace = totalSize - dirs["/"];
+        var spaceNeeded = updateSize - freeSpace;
+
+        var lowestPossible = dirs.Where(x => x.Value > spaceNeeded).OrderBy(x => x.Value).First();
+        
+        
+        return lowestPossible.Value.ToString();
     }
 }
 
