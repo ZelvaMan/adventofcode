@@ -11,13 +11,13 @@
       "commandName": "Project",
       "commandLineArgs": "-ti"
     },
-    "Selected day Test (override in launchSettings.json)": {
+    "Selected day Test": {
       "commandName": "Project",
-      "commandLineArgs": "01 2022 "
+      "commandLineArgs": "07 2022 -ti"
     },
-    "Selected day (override in launchSettings.json)": {
+    "Selected day": {
       "commandName": "Project",
-      "commandLineArgs": "01 2022 -ti"
+      "commandLineArgs": "07 2022 "
     }
   }
 }
