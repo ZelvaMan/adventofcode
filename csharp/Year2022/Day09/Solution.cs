@@ -6,7 +6,7 @@ public class Solution
 {
 	public static string Part1(string[] input)
 	{
-		var movements = RiverSimulator.parseInstructions(input);
+		var movements = RiverSimulator.ParseInstructions(input);
 
 		var simulation = new RiverSimulator(2);
 
@@ -20,7 +20,7 @@ public class Solution
 
 	public static string Part2(string[] input)
 	{
-		var movements = RiverSimulator.parseInstructions(input);
+		var movements = RiverSimulator.ParseInstructions(input);
 
 		var simulation = new RiverSimulator(10);
 
@@ -58,7 +58,6 @@ public class RiverSimulator
 		for (int i = 0; i < motion.count; i++)
 		{
 			SimulateMove(motion.direction);
-			// PrintState();
 		}
 	}
 
@@ -70,23 +69,23 @@ public class RiverSimulator
 
 		for (var i = 1; i < Rope.Length; i++)
 		{
-			Rope[i] = MoveTail(Rope[i - 1], Rope[i]);
+			Rope[i] = MoveSegment(Rope[i - 1], Rope[i]);
 		}
 
 		visitedByTail.Add(Rope.Last());
 	}
 
 
-	private Vector2 MoveTail(Vector2 head, Vector2 tail)
+	private Vector2 MoveSegment(Vector2 head, Vector2 tail)
 	{
-		if (TailTouching(head, tail))
+		if (IsTailTouching(head, tail))
 		{
 			return tail;
 		}
 
-		var diferenceVector = head - tail;
+		var differenceVector = head - tail;
 
-		var tailMove = ChangeToOnes(diferenceVector);
+		var tailMove = ChangeToOnes(differenceVector);
 
 		return tail + tailMove;
 	}
@@ -117,26 +116,19 @@ public class RiverSimulator
 		return v;
 	}
 
-	private bool TailTouching(Vector2 head, Vector2 tail)
+	private bool IsTailTouching(Vector2 head, Vector2 tail)
 	{
-		// Console.WriteLine("Distance: " + Vector2.Distance(head, tail));
 		//their distance is less than sqrt 2
 		return Vector2.Distance(head, tail) < 2;
 	}
 
-	//HELPERS
-	public void PrintState()
-	{
-		Console.WriteLine($"tail={Rope[0].ToString()} head ={Rope[1].ToString()}");
-	}
-
 	//PARSING
-	public static List<(Vector2, int)> parseInstructions(string[] instructions)
+	public static List<(Vector2, int)> ParseInstructions(IEnumerable<string> instructions)
 	{
-		return instructions.Select(x => (parseVec(x[0]), int.Parse(x[2..]))).ToList();
+		return instructions.Select(x => (ParseVec(x[0]), int.Parse(x[2..]))).ToList();
 	}
 
-	private static Vector2 parseVec(char v)
+	private static Vector2 ParseVec(char v)
 	{
 		return v switch
 		{
