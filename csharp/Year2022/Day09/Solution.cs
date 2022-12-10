@@ -8,7 +8,7 @@ public class Solution
 	{
 		var movements = RiverSimulator.parseInstructions(input);
 
-		var simulation = new RiverSimulator();
+		var simulation = new RiverSimulator(2);
 
 		foreach (var motion in movements)
 		{
@@ -20,30 +20,45 @@ public class Solution
 
 	public static string Part2(string[] input)
 	{
-		return "NOT IMPLEMENTED";
+		var movements = RiverSimulator.parseInstructions(input);
+
+		var simulation = new RiverSimulator(10);
+
+		foreach (var motion in movements)
+		{
+			simulation.SimulateMotion(motion);
+		}
+
+		return simulation.visitedByTail.Count.ToString();
 	}
 }
 
 public class RiverSimulator
 {
-	private Vector2 head;
-	private Vector2 tail;
+	private Vector2[] Rope;
+	private int length;
 	public HashSet<Vector2> visitedByTail { get; private set; }
 
-	public RiverSimulator()
+	public RiverSimulator(int ropeLength)
 	{
-		head = Vector2.Zero;
-		tail = Vector2.Zero;
-		visitedByTail = new HashSet<Vector2>() {tail};
+		length = ropeLength;
+		//init Rope
+		Rope = new Vector2[ropeLength];
+		for (int i = 0; i < length; i++)
+		{
+			Rope[i] = Vector2.One;
+		}
+
+		visitedByTail = new HashSet<Vector2>() {Vector2.One};
 	}
 
 	public void SimulateMotion((Vector2 direction, int count) motion)
 	{
-		Console.WriteLine($"SIMULATE MOTION: {motion}");
+		// Console.WriteLine($"SIMULATE MOTION: {motion}");
 		for (int i = 0; i < motion.count; i++)
 		{
 			SimulateMove(motion.direction);
-			PrintState();
+			// PrintState();
 		}
 	}
 
@@ -51,22 +66,31 @@ public class RiverSimulator
 	public void SimulateMove(Vector2 direction)
 	{
 		//move head
-		head = head + direction;
+		Rope[0] += direction;
 
-		if (tailTouching())
+		for (var i = 1; i < Rope.Length; i++)
 		{
-			return;
+			Rope[i] = MoveTail(Rope[i - 1], Rope[i]);
 		}
 
+		visitedByTail.Add(Rope.Last());
+	}
 
-		var diferenceVector = Vector2.Subtract(head, tail);
+
+	private Vector2 MoveTail(Vector2 head, Vector2 tail)
+	{
+		if (TailTouching(head, tail))
+		{
+			return tail;
+		}
+
+		var diferenceVector = head - tail;
 
 		var tailMove = ChangeToOnes(diferenceVector);
 
-		tail = Vector2.Add(tail, tailMove);
-
-		visitedByTail.Add(tail);
+		return tail + tailMove;
 	}
+
 
 	private Vector2 ChangeToOnes(Vector2 v)
 	{
@@ -93,19 +117,20 @@ public class RiverSimulator
 		return v;
 	}
 
-	private bool tailTouching()
+	private bool TailTouching(Vector2 head, Vector2 tail)
 	{
 		// Console.WriteLine("Distance: " + Vector2.Distance(head, tail));
 		//their distance is less than sqrt 2
 		return Vector2.Distance(head, tail) < 2;
 	}
 
-
+	//HELPERS
 	public void PrintState()
 	{
-		Console.WriteLine($"tail={tail.ToString()} head ={head.ToString()}");
+		Console.WriteLine($"tail={Rope[0].ToString()} head ={Rope[1].ToString()}");
 	}
 
+	//PARSING
 	public static List<(Vector2, int)> parseInstructions(string[] instructions)
 	{
 		return instructions.Select(x => (parseVec(x[0]), int.Parse(x[2..]))).ToList();
@@ -113,18 +138,13 @@ public class RiverSimulator
 
 	private static Vector2 parseVec(char v)
 	{
-		switch (v)
+		return v switch
 		{
-			case 'R':
-				return new Vector2(1, 0);
-			case 'U':
-				return new Vector2(0, 1);
-			case 'L':
-				return new Vector2(-1, 0);
-			case 'D':
-				return new Vector2(0, -1);
-		}
-
-		return Vector2.Zero;
+			'R' => new Vector2(1, 0),
+			'U' => new Vector2(0, 1),
+			'L' => new Vector2(-1, 0),
+			'D' => new Vector2(0, -1),
+			_ => Vector2.Zero
+		};
 	}
 }
