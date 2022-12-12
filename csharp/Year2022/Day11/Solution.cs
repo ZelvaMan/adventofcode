@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 namespace Csharp.Year2022.Day11;
 
@@ -8,19 +9,22 @@ public class Solution
 	{
 		var monkeys = ParseMonkeys(input);
 
-		for (int i = 0; i < 20; i++)
-		{
-			DoRound(monkeys);
-		}
-
+		Simulate(monkeys, 20, false);
 		var ordered = monkeys.OrderByDescending(x => x.InspectionsCount).Take(2).ToArray();
-
 		return (ordered[0].InspectionsCount * ordered[1].InspectionsCount).ToString();
 	}
 
 	public static string Part2(string[] input)
 	{
-		return "NOT IMPLEMENT";
+		var monkeys = ParseMonkeys(input);
+
+		Simulate(monkeys, 10000, true);
+		var ordered = monkeys.OrderByDescending(x => x.InspectionsCount).Take(2).ToArray();
+		var m1 = ordered[0].InspectionsCount;
+		var m2 = ordered[1].InspectionsCount;
+
+		BigInteger n = m1 * m2;
+		return (n).ToString();
 	}
 
 	private static List<Monkey> ParseMonkeys(string[] input)
@@ -28,11 +32,14 @@ public class Solution
 		return input.Chunk(7).Select(x => new Monkey(x)).ToList();
 	}
 
-	private static void DoRound(List<Monkey> monkeys)
+	private static void Simulate(List<Monkey> monkeys, int rounds, bool part2)
 	{
-		foreach (var monkey in monkeys)
+		for (int i = 0; i < rounds; i++)
 		{
-			monkey.InspectItems(monkeys);
+			foreach (var monkey in monkeys)
+			{
+				monkey.InspectItems(monkeys, part2);
+			}
 		}
 	}
 }
@@ -55,11 +62,22 @@ public class Monkey
 		throwTo.ifFalse = int.Parse(monkeyInput[5][30..].Trim());
 	}
 
-	public void InspectItems(List<Monkey> monkeys)
+	public void InspectItems(List<Monkey> monkeys, bool part2)
 	{
+		var dividor = MathHelper.Lcm(monkeys.Select(x => (long) x.dividant).ToArray());
+
 		foreach (var item in items)
 		{
 			long value = operation.DoOperation(item);
+
+			if (part2)
+			{
+				value %= dividor;
+			}
+			else
+			{
+				value /= 3;
+			}
 
 			if (value % dividant == 0)
 			{
@@ -83,15 +101,13 @@ public class Operation
 
 	public long DoOperation(long old)
 	{
-		var newValue = (operand, number) switch
+		return (operand, number) switch
 		{
 			("*", "old") => (old * old),
 			("+", "old") => (old + old),
 			("*", _) => (old * int.Parse(number)),
 			("+", _) => (old + int.Parse(number))
 		};
-
-		return newValue / 3;
 	}
 
 
@@ -101,5 +117,38 @@ public class Operation
 
 		operand = rightPart[1];
 		number = rightPart[2];
+	}
+}
+
+public static class MathHelper
+{
+	private static long Gcd(long a, long b)
+	{
+		while (true)
+		{
+			if (a == 0) return b;
+			var a1 = a;
+			a = b % a;
+			b = a1;
+		}
+	}
+
+	//recursive implementation
+	private static long LcmOfArray(long[] arr, long idx)
+	{
+		// lcm(a,b) = (a*b/gcd(a,b))
+		if (idx == arr.Length - 1)
+		{
+			return arr[idx];
+		}
+
+		var a = arr[idx];
+		var b = LcmOfArray(arr, idx + 1);
+		return (a * b / Gcd(a, b));
+	}
+
+	public static long Lcm(long[] array)
+	{
+		return LcmOfArray(array, 0);
 	}
 }
