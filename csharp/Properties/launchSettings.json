@@ -13,11 +13,11 @@
     },
     "Selected day Test": {
       "commandName": "Project",
-      "commandLineArgs": "10 2022 -ti"
+      "commandLineArgs": "11 2022 -ti"
     },
     "Selected day": {
       "commandName": "Project",
-      "commandLineArgs": "10 2022 "
+      "commandLineArgs": "11 2022 "
     }
   }
 }
