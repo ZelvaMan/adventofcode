@@ -12,7 +12,7 @@ public class Solution
 				.ToArray())
 			.Select(x => (x[0], x[1])).ToArray();
 
-		var bigger = parsed.Skip(5).Select((val, index) => (index, val.Item1.CompareTo(val.Item2))).ToList();
+		var bigger = parsed.Select((val, index) => (index, val.Item1.CompareTo(val.Item2))).ToList();
 		var results = bigger.Where(x => x.Item2 < 0).Select(x => x.index + 1).ToArray();
 
 		return results.Sum().ToString();
@@ -39,7 +39,8 @@ public class Packet : IComparable<Packet>
 		//empty list is always smaller
 		if (packetString == "[]")
 		{
-			number = -1;
+			isNumber = false;
+			innerChilder = new List<Packet>();
 			return;
 		}
 
