@@ -20,7 +20,23 @@ public class Solution
 
 	public static string Part2(string[] input)
 	{
-		return "NOT IMPLEMENTED";
+		var parsed = input.Where(x => !String.IsNullOrEmpty(x))
+			.Select(x => new Packet(x)).ToList();
+
+
+		var p1 = new Packet("[[2]]");
+		var p2 = new Packet("[[6]]");
+		parsed.Add(p1);
+		parsed.Add(p2);
+
+		var filtered = parsed.OrderBy(x => x).ToList();
+
+		foreach (Packet packet in filtered)
+		{
+			Console.WriteLine(packet.packetString);
+		}
+
+		return ((filtered.IndexOf(p1) + 1) * (filtered.IndexOf(p2) + 1)).ToString();
 	}
 }
 
@@ -29,7 +45,7 @@ public class Packet : IComparable<Packet>
 	private List<Packet> innerChilder = new List<Packet>();
 	private bool isNumber = true;
 	private int number = 0;
-	private string packetString;
+	public string packetString;
 
 
 	public Packet(string rawPacket)
@@ -94,26 +110,26 @@ public class Packet : IComparable<Packet>
 		//if both are integers
 		if (this.isNumber && that.isNumber)
 		{
-			Console.WriteLine($"Comparing numbers {this.number} ==  {that.number}");
+			// Console.WriteLine($"Comparing numbers {this.number} ==  {that.number}");
 			return this.number - that.number;
 		}
 
 		if (!this.isNumber && !that.isNumber)
 		{
-			Console.WriteLine($"Comparing lists {this.packetString}   ==  {that.packetString}");
+			// Console.WriteLine($"Comparing lists {this.packetString}   ==  {that.packetString}");
 			for (int i = 0; i < Math.Min(this.innerChilder.Count, that.innerChilder.Count); i++)
 			{
 				var diff = this.innerChilder[i].CompareTo(that.innerChilder[i]);
 
 				if (diff != 0)
 				{
-					Console.WriteLine($"Diff is {diff}");
+					// Console.WriteLine($"Diff is {diff}");
 					return diff;
 				}
 			}
 
-			Console.WriteLine($"lists  elements arent different {this.innerChilder.Count} {that.innerChilder.Count}");
-			Console.WriteLine($"Diff is {this.innerChilder.Count - that.innerChilder.Count}");
+			// Console.WriteLine($"lists  elements arent different {this.innerChilder.Count} {that.innerChilder.Count}");
+			// Console.WriteLine($"Diff is {this.innerChilder.Count - that.innerChilder.Count}");
 			return this.innerChilder.Count - that.innerChilder.Count;
 		}
 
