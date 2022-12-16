@@ -11,13 +11,32 @@ public class Solution
 		var start = map.FindPoints('S').First();
 		var end = map.FindPoints('E').First();
 
-		var distance = map.FindShortestPath(start, end);
+		var distance = map.FindShortestPath(start, end, Int32.MaxValue);
 		return distance.ToString();
 	}
 
 	public static string Part2(string[] input)
 	{
-		return "NOT IMPLEMENTED";
+		var map = new HeighMap(input);
+
+		var starts = map.FindPoints('a').ToList();
+		var end = map.FindPoints('E').First();
+
+		var bestDistance = int.MaxValue;
+
+		Console.WriteLine($"starts = {starts.Count}");
+		foreach (var start in starts)
+		{
+			var distance = map.FindShortestPath(start, end,bestDistance);
+			Console.WriteLine($"distance: {distance}");
+			if (distance != -1 && distance < bestDistance)
+			{
+				Console.WriteLine($"Update best distance to {distance}");
+				bestDistance = distance;
+			}
+		}
+
+		return bestDistance.ToString();
 	}
 }
 
@@ -37,7 +56,7 @@ public class HeighMap
 	private Queue<(Vector2 point, int distance)> queue;
 	private HashSet<Vector2> visited;
 
-	public int FindShortestPath(Vector2 start, Vector2 end)
+	public int FindShortestPath(Vector2 start, Vector2 end, int returnDistance)
 	{
 		visited = new HashSet<Vector2>();
 		queue = new Queue<(Vector2 point, int distance)>();
@@ -48,16 +67,17 @@ public class HeighMap
 		while (queue.Any())
 		{
 			var current = queue.Dequeue();
-			Console.WriteLine(visited.Count);
-			Console.WriteLine(queue.Count);
-			Console.WriteLine(current);
+			// Console.WriteLine(current);
 			//check if we found end
 			if (current.point == end)
 			{
 				return current.distance;
 			}
 
-
+			if (!(current.distance + 1 < returnDistance))
+			{
+				continue;
+			}
 
 			TryAddToQueue(getVal(current.point), current.point + new Vector2(0, 1), current.distance + 1);
 			TryAddToQueue(getVal(current.point), current.point + new Vector2(0, -1), current.distance + 1);
@@ -82,7 +102,7 @@ public class HeighMap
 
 		var newValue = getVal(newVector);
 
-		Console.WriteLine($"{oldVal} => {newValue}");
+		// Console.WriteLine($"{oldVal} => {newValue}");
 
 		if ((newValue - 1) == oldVal || newValue <= oldVal)
 		{
