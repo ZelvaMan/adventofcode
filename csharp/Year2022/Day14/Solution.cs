@@ -20,7 +20,15 @@ public class Solution
 
 	public static string Part2(string[] input)
 	{
-		return "NOT IMPLEMENTED";
+		var simulation = new SandSimulation();
+		simulation.AddStructures(input);
+		simulation.addFloor();
+
+		// simulation.print();
+
+		var ans = simulation.simulateSand2();
+
+		return ans.ToString();
 	}
 }
 
@@ -119,9 +127,8 @@ public class SandSimulation
 			}
 
 			s += "\n"; //Console.Write("\n")
-			
 		}
-		
+
 		Thread.Sleep(10);
 		Console.Clear();
 		Console.Write(s);
@@ -150,6 +157,29 @@ public class SandSimulation
 		return c;
 	}
 
+	public int simulateSand2()
+	{
+		var start = new Vector2(500, 0);
+		var maxy = getDimensions().y.max;
+		int c = 0;
+		do
+		{
+			simulateSandDrop(start, maxy);
+			// print();
+			c++;
+		} while (!grid.ContainsKey(start));
+
+
+		return c;
+	}
+
+
+	public void addFloor()
+	{
+		var bounds = getDimensions();
+
+		AddStructure($"-1000,{bounds.y.max + 2} -> 1000,{bounds.y.max + 2}");
+	}
 
 	public Vector2? simulateSandDrop(Vector2 startCord, int yStopLevel)
 	{
