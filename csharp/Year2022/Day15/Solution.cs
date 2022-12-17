@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Globalization;
+using System.Numerics;
 using System.Text.RegularExpressions;
 
 namespace Csharp.Year2022.Day15;
@@ -42,7 +43,23 @@ public class Solution
 
 	public static string Part2(string[] input)
 	{
-		return "NOT IMPLEMENTED";
+		var sensors = input.Select(x => new Sensor(x)).ToList();
+
+
+		foreach (var sensor in sensors)
+		{
+			Console.WriteLine("GET NEW POINTS for beacon");
+			foreach (var point in sensor.GetFreePoints())
+			{
+				if (!sensors.Any(sensor => sensor.IsTooClose(point)))
+				{
+					Console.WriteLine(point);
+					return ((BigInteger)(((BigInteger)point.X * (BigInteger)4_000_000 + (BigInteger)point.Y))).ToString();
+				}
+			}
+		}
+
+		return "I FCKED UP";
 	}
 }
 
@@ -80,5 +97,57 @@ public class Sensor
 	public static long CalcDistance(Vector2 p1, Vector2 p2)
 	{
 		return (long) (Math.Abs(p1.X - p2.X) + Math.Abs(p1.Y - p2.Y));
+	}
+
+
+	public const int CordLimit = 4_000_000;
+
+	public List<Vector2> GetFreePoints()
+	{
+		var free = new List<Vector2>();
+
+
+		for (int i = 0; i < ManhattanDistance + 1; i++)
+		{
+			var newPos = new Vector2(Position.X - ManhattanDistance + i - 1, Position.Y + i);
+			if (inside(newPos))
+			{
+				free.Add(newPos);
+			}
+		}
+
+		for (int i = 0; i < ManhattanDistance + 1; i++)
+		{
+			var newPos = new Vector2(Position.X + i, Position.Y + ManhattanDistance - i + 1);
+			if (inside(newPos))
+			{
+				free.Add(newPos);
+			}
+		}
+
+		for (int i = 0; i < ManhattanDistance + 1; i++)
+		{
+			var newPos = new Vector2(Position.X + ManhattanDistance - i + 1, Position.Y - i);
+			if (inside(newPos))
+			{
+				free.Add(newPos);
+			}
+		}
+
+		for (int i = 0; i < ManhattanDistance + 1; i++)
+		{
+			var newPos = new Vector2(Position.X - -i, Position.Y - ManhattanDistance + i - 1);
+			if (inside(newPos))
+			{
+				free.Add(newPos);
+			}
+		}
+
+		return free;
+	}
+
+	private static bool inside(Vector2 p)
+	{
+		return !(p.X is <= 0 or > CordLimit || p.Y is <= 0 or > CordLimit);
 	}
 }
