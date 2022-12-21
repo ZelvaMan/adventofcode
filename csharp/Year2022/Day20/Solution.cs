@@ -36,7 +36,9 @@ public class Solution
 			// Mixer.PrintList();
 		}
 
-		var numbers = Mixer.Numbers.Take(3001).ToArray();
+		var numbers = Mixer.BuildList().Take(3001).ToArray();
+		Console.WriteLine( $"{ReadVal(numbers, 1000)} + {ReadVal(numbers, 2000)} + {ReadVal(numbers, 3000)}");
+		
 		var result = ReadVal(numbers, 1000) + ReadVal(numbers, 2000) + ReadVal(numbers, 3000);
 
 		return result.ToString();
