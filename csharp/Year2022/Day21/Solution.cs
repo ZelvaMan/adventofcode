@@ -7,76 +7,71 @@ public class Solution
 {
 	public static string Part1(string[] input)
 	{
-		Dictionary<string, Monkey> monkeys = input.Select(x => new Monkey(x)).ToDictionary(x => x.name, x => x);
-		Monkey.Monkeys = monkeys;
+		Monkey.Monkeys = input.Select(x => new Monkey(x)).ToDictionary(x => x.Name, x => x);
 
-		var res = monkeys["root"].Evaluate();
-		return res.ToString();
+		return Monkey.Monkeys["root"].Evaluate().ToString();
 	}
 
 	public static string Part2(string[] input)
 	{
-		Dictionary<string, Monkey> monkeys = input.Select(x => new Monkey(x)).ToDictionary(x => x.name, x => x);
-		Monkey.Monkeys = monkeys;
+		Monkey.Monkeys = input.Select(x => new Monkey(x)).ToDictionary(x => x.Name, x => x);
 
-		var playerMonkey = monkeys["humn"];
-		var root = monkeys["root"];
-		monkeys["root"].Evaluate();
+		var root = Monkey.Monkeys["root"];
+		root.Evaluate();
 		root.CalculateHumanBranch();
-		long res;
 
-		if (root.RightMonkey.isHumanBranch)
-		{
-			res = root.RightMonkey.CalculateHuman(root.LeftMonkey.number);
-		}
-		else
-		{
-			res = root.LeftMonkey.CalculateHuman(root.RightMonkey.number);
-		}
+		var res = root.RightMonkey.IsHumanBranch
+			? root.RightMonkey.CalculateHuman(root.LeftMonkey.Number)
+			: root.LeftMonkey.CalculateHuman(root.RightMonkey.Number);
 
-		Console.WriteLine(res);
 		return res.ToString();
 	}
 }
 
 public class Monkey
 {
+	private const string HumanName = "humn";
+
 	public static Dictionary<string, Monkey> Monkeys;
-	public string name;
+
 
 	private string leftMonkeyName;
 	private string rightMonkeyName;
-
 	public Monkey LeftMonkey => Monkeys[leftMonkeyName];
-
 	public Monkey RightMonkey => Monkeys[rightMonkeyName];
-	public string opearation;
-	public bool HasNumber;
-	public long number;
-	public bool isHumanBranch;
+
+
+	private readonly string opearation;
+	private readonly bool hasNumber;
+	public readonly string Name;
+
+	public long Number;
+	public bool IsHumanBranch;
 
 	public Monkey(string input)
 	{
-		name = input[..4];
-		if (long.TryParse(input[6..], out number))
+		Name = input[..4];
+
+		var expression = input[6..];
+		if (long.TryParse(expression, out Number))
 		{
-			HasNumber = true;
+			hasNumber = true;
 		}
 		else
 		{
-			var splitted = input[6..].Split(" ");
-			leftMonkeyName = splitted[0];
-			opearation = splitted[1];
-			rightMonkeyName = splitted[2];
+			var split = expression.Split(" ");
+			leftMonkeyName = split[0];
+			opearation = split[1];
+			rightMonkeyName = split[2];
 		}
 	}
 
 
 	public long Evaluate()
 	{
-		if (HasNumber)
+		if (hasNumber)
 		{
-			return number;
+			return Number;
 		}
 
 		var leftNumber = LeftMonkey.Evaluate();
@@ -90,25 +85,25 @@ public class Monkey
 			"/" => leftNumber / rightNumber
 		};
 
-		number = res;
+		Number = res;
 		return res;
 	}
 
 	public void CalculateHumanBranch()
 	{
-		if (name == "humn")
+		if (Name == HumanName)
 		{
-			isHumanBranch = true;
+			IsHumanBranch = true;
 		}
 
-		if (HasNumber) return;
+		if (hasNumber) return;
 
 		LeftMonkey.CalculateHumanBranch();
 		RightMonkey.CalculateHumanBranch();
 		//if one of children is human branch, parent also is
-		if (LeftMonkey.isHumanBranch || RightMonkey.isHumanBranch)
+		if (LeftMonkey.IsHumanBranch || RightMonkey.IsHumanBranch)
 		{
-			isHumanBranch = true;
+			IsHumanBranch = true;
 		}
 	}
 
@@ -116,85 +111,52 @@ public class Monkey
 	{
 		//return number human should yell
 
-		if (name == "humn")
+		if (Name == HumanName)
 		{
 			return required;
 		}
 
-		return LeftMonkey.isHumanBranch
+		return LeftMonkey.IsHumanBranch
 			? LeftMonkey.CalculateHuman(GetRequired(RightMonkey, required, this, false))
-			: RightMonkey.CalculateHuman(GetRequired(RightMonkey, required, this, true));
+			: RightMonkey.CalculateHuman(GetRequired(LeftMonkey, required, this, true));
 	}
 
-	private static long GetRequired(Monkey known, long required, Monkey parent, bool firstKnown)
+	private static long GetRequired(Monkey given, long target, Monkey parent, bool leftGiven)
 	{
 		var operation = parent.opearation;
-		var number = known.number;
+		var number = given.Number;
 
 
-		if (firstKnown)
+		Console.WriteLine(leftGiven ? $"{number} {operation} X = {target}" : $"X {operation} {number} = {target}");
+
+		return operation switch
 		{
-			Console.WriteLine($"{number} {operation} X = {required}");
-		}
-		else
-		{
-			Console.WriteLine($"X {operation} {number} = {required}");
-		}
-
-		if (operation == "+")
-		{
-			return required - number;
-		}
-
-		if (operation == "*")
-		{
-			return required / number;
-		}
-
-		if (operation == "/")
-		{
-			if (firstKnown)
-			{
-				return number / required;
-			}
-
-			return number * required;
-		}
-
-		if (operation == "-")
-		{
-			if (firstKnown)
-			{
-				return number - required;
-			}
-
-			return number + required;
-		}
-
-		throw new Exception("oh no");
+			"+" => target - number,
+			"*" => target / number,
+			"/" when leftGiven => number / target,
+			"/" => number * target,
+			"-" when leftGiven => number - target,
+			"-" => number + target,
+		};
 	}
 
 	public override string ToString()
 	{
-		if (name == "humn")
+		if (Name == HumanName)
 		{
 			return "HUMAN";
 		}
 
-		if (HasNumber)
+		if (hasNumber)
 		{
-			return $" {number} ";
+			return $" {Number} ";
 		}
 
-		var left = LeftMonkey;
-		var right = RightMonkey;
-
-
-		if (name == "root")
+		if (Name == "root")
 		{
-			return $"{left}	=	{right}";
+			return $"{LeftMonkey}	=	{RightMonkey}";
 		}
 
-		return $"({left} {opearation} {right})";
+		return $"({LeftMonkey} {opearation} {RightMonkey})";
 	}
 }
